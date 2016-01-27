@@ -1,0 +1,23 @@
+Battery.o: Sources/Battery.cpp Sources/Battery.hpp Sources/Item.hpp \
+ Sources/ZMQ/zmqClient.hpp Sources/adresses.hpp
+batteryMonitor.o: Sources/batteryMonitor.cpp Sources/ZMQ/zmqClient.hpp
+Blades.o: Sources/Blades.cpp Sources/Blades.hpp Sources/Item.hpp \
+ Sources/ZMQ/zmqClient.hpp Sources/adresses.hpp
+Direction.o: Sources/Direction.cpp Sources/Direction.hpp \
+ Sources/mySpi.hpp Sources/Item.hpp Sources/ZMQ/zmqClient.hpp \
+ Sources/adresses.hpp Sources/Tools.hpp
+GPIO.o: Sources/GPIO.cpp Sources/GPIO.hpp
+GPS.o: Sources/GPS.cpp Sources/GPS.hpp Sources/Item.hpp \
+ Sources/ZMQ/zmqClient.hpp Sources/adresses.hpp
+grasmaaier.o: Sources/grasmaaier.cpp Sources/grasmaaier.hpp \
+ Sources/ZMQ/zmqClient.hpp Sources/adresses.hpp Sources/Tools.hpp
+ipinfo.o: Sources/ipinfo.cpp Sources/ipinfo.hpp
+Item.o: Sources/Item.cpp Sources/Item.hpp Sources/ZMQ/zmqClient.hpp \
+ Sources/adresses.hpp
+Motor.o: Sources/Motor.cpp Sources/Motor.hpp Sources/Item.hpp \
+ Sources/ZMQ/zmqClient.hpp Sources/adresses.hpp
+mySpi.o: Sources/mySpi.cpp Sources/mySpi.hpp
+shutdownClient.o: Sources/shutdownClient.cpp Sources/ZMQ/zmqClient.hpp \
+ Sources/ipinfo.hpp
+shutdown.o: Sources/shutdown.cpp
+Tools.o: Sources/Tools.cpp Sources/Tools.hpp
