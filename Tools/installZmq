@@ -1,0 +1,10 @@
+#!/bin/bash
+mkdir /Software
+cd /Software
+# libsodium
+git clone https://github.com/jedisct1/libsodium.git
+cd libsodium
+./autoconf
+./configure
+make install
+#libzmq
