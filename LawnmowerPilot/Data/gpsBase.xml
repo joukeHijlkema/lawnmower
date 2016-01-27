@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+
+<root>
+  <average date="06/01/2016">
+    <lon>1.1919485873321642444</lon>
+    <lat>43.168688701413778119</lat>
+    <alt>418.50649870303556099</alt>
+  </average>
+  <average date="09/01/2016">
+    <lon>1.1919533962667747673</lon>
+    <lat>43.168685786771789026</lat>
+    <alt>421.09734799814543749</alt>
+  </average>
+    
+</root>
