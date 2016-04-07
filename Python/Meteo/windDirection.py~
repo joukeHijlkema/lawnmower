@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  =================================================
+#  windDirection.py
+#   - Author jouke hijlkema <jouke.hijlkema@onera.fr>
+#   - Initial Version 1.0
+#  =================================================
+import myMCP3008
+import time
+
+ADC = myMCP3008.myMCP3008(0)
+
+while True:
+    print ADC.read()
+    time.sleep(1)

@@ -1,0 +1,32 @@
+path {
+    fill:none;
+}
+
+.x.axis line,
+.x.axis path,
+.y.axis line,
+.y.axis path {
+    stroke: black;
+}
+
+svg {
+    font: 10px sans-serif;
+}
+
+text.title {
+    font: 15px sans-serif;
+    fill: darkblue;
+}
+
+rect,
+.barGraph text {
+    fill: steelblue;
+}
+
+.lineGraph text {
+    fill: red;
+}
+
+path.line {
+    stroke: red;
+}
