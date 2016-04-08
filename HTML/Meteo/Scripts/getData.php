@@ -1,5 +1,6 @@
 <?php
 function getData($myquery) {
+    // echo $myquery."<br>";
     $username = "Meteo"; 
     $password = "!Meteo";   
     $host = "localhost";
@@ -21,25 +22,23 @@ function getData($myquery) {
     }
 
     mysql_close($server);
-    return json_encode($data);     
+
+    return $data;
+   
 }
 
 // print_r($_GET)."<br>";
 
-$col   = $_GET['col'];
-$start = $_GET['start'];
-$end   = $_GET['end'];
-
-if ($_GET['period'] == "day") {
-    $myquery ="SELECT Time,$col as Value FROM Mesurements WHERE Time BETWEEN '$start' AND '$end'";
-} else  if ($_GET['period']=='month' &&  $_GET['type'] =='avg') {
-    $myquery ="SELECT `Time`, AVG($col) as Value FROM Mesurements WHERE Time BETWEEN '$start' AND '$end' GROUP BY YEAR(Time), MONTH(Time), DAY(Time)";
+if ($_GET['what'] == "actual") {
+    $data = getData("SELECT Temperature,Humidity,Pressure,WindSpeed,WindDirection FROM `Mesurements` ORDER BY Time ASC LIMIT 1");
+    $rain = getData("SELECT MAX(Rain)-MIN(Rain) AS Rain FROM `Mesurements` WHERE Time > DATE_SUB(NOW(), INTERVAL 1 DAY)");
+    $data[0]['Rain']=$rain[0]['Rain'];
+   
 } else {
     $myquery ="";
 }
 
 // echo $myquery."<br>";
 
-echo getData($myquery);
-
+ echo json_encode($data);     
 ?>

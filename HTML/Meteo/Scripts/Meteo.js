@@ -1,141 +1,52 @@
-var margin = {top: 40, right: 20, bottom: 30, left: 50},
-    width  = 900 - margin.left - margin.right,
-    height = 250 - margin.top  - margin.bottom;
+// wait for the svg to load
+var mySVG = document.getElementById("backDrop");
+var svgDoc;
+mySVG.addEventListener("load",function() {
+    svgDoc = mySVG.contentDocument;
+    var date = new Date().toLocaleDateString("fr",{ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    setDate(date);
+}, false);
 
-function parseDate(date) {
-    return d3.time.format("%Y-%m-%d %H:%M:%S").parse(date);
-}
+var myFloat = new Intl.NumberFormat("fr-FR",{maximumFractionDigits: 1 });
 
-function drawLine(container,date,col,ymin,ymax) {
-
-    var x = d3.time.scale().range([0, width]).nice(d3.time.hour);
-    var y = d3.scale.linear().range([height, 0]);
-
-    var xAxisDay   = d3.svg.axis().scale(x).orient("top").ticks(12).tickFormat(d3.time.format("%H:%M"));
-    var yAxis      = d3.svg.axis().scale(y).orient("left").ticks(10);
-
-    var valueline = d3.svg.line()
-	.x(function(d) { return x(d.Time); })
-	.y(function(d) { return y(d.Value); });
-
-    var svg = d3.select(container)
-	.attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("class","lineGraph")
-	.attr("id",container.substring(1)+"_lineGraph")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var start = d3.time.format("%Y-%m-%d").parse(date);
-    var end   = d3.time.day.offset(start, 1);
-    var cmd   = 'Scripts/getData.php?period=day&type=raw'+
-	'&start='+d3.time.format("%Y-%m-%d 00:00:00")(start)+
-	'&end='  +d3.time.format("%Y-%m-%d 00:00:00")(end)+
-	'&col='  +col;
-    
-    d3.json(cmd, function(error, data) {
+function setDate(date) {
+    svgDoc.getElementById("myDateText").textContent=date;
+    d3.json("Scripts/getData.php?what=actual",function(error, data) {
 	data.forEach(function(d) {
-	    d.Time  = parseDate(d.Time);
-	    d.Value = d.Value;
+	    svgDoc.getElementById("myTemp").textContent=temp(d.Temperature);
+	    svgDoc.getElementById("myHumidity").textContent=hum(d.Humidity);
+	    svgDoc.getElementById("myPressure").textContent=pres(d.Pressure);
+	    svgDoc.getElementById("myWindspeed").textContent=windSpeed(d.WindSpeed);
+	    svgDoc.getElementById("myWinddir").textContent=windDir(d.WindDirection);
+	    svgDoc.getElementById("myRain").textContent=rain(d.Rain);
+	    
 	});
-	
-	// Scale the range of the data
-	x.domain([start,end]);
-	y.domain([ymin,ymax]);
-
-	svg.append("path")      // Add the valueline path.
-            .attr("class", "line")
-            .attr("d", valueline(data));
-
-	svg.append("g")         // Add the X Axis for days ot top
-            .attr("class", "x axis line")
-            .attr("transform", "translate(0,0)")
-            .call(xAxisDay);
-	
-	svg.append("g")         // Add the Y Axis
-            .attr("class", "y axis line")
-            .call(yAxis);
-
     });
 }
 
-function drawBar(container,date,col,ymin,ymax) {
-
-    var x = d3.time.scale().range([0, width]).nice(d3.time.hour);
-    var y = d3.scale.linear().range([height, 0]);
-
-    var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(10).tickFormat(d3.time.format("%d"));
-    var yAxis = d3.svg.axis().scale(y).orient("right").ticks(10);
-
-    var svg = d3.select(container)
-	.attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-	.append("g")
-	.attr("class","barGraph")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-    var start = d3.time.month.floor(d3.time.format("%Y-%m-%d").parse(date));
-    var end   = d3.time.day.offset(d3.time.month.offset(start,1),-1);
-    var cmd   = 'Scripts/getData.php?period=month&type=avg'+
-	'&start='+d3.time.format("%Y-%m-%d 00:00:00")(start)+
-	'&end='  +d3.time.format("%Y-%m-%d 00:00:00")(end)+
-	'&col='  +col;
-    // alert(cmd);
-    var nbDays   = parseInt(d3.time.format("%d")(end))-parseInt(d3.time.format("%d")(start))+1;
-    var barWidth = 0.9*(width/nbDays)-2;
-    
-    d3.json(cmd, function(error, data) {
-	data.forEach(function(d) {
-	    d.Time  = parseDate(d.Time);
-	    d.Value = d.Value;
-	});
-	
-	// Scale the range of the data
-	x.domain([start,end]);
-	y.domain([ymin,ymax]);
-
-	svg.append("g")         // Add the X Axis for days ot top
-	    .attr("class", "x axis")
-            .attr("transform", "translate(0," + height + ")")
-            .call(xAxis);
-	
-	svg.append("g")         // Add the Y Axis
-            .attr("class", "y axis")
-	    .attr("transform", "translate("+width+",0)")
-            .call(yAxis);
-
-	svg.selectAll(".bar")
-	    .attr("id","barGraph")
-	    .data(data)
-	    .enter().append("rect")
-	    .attr("class", "bar")
-	    .attr("x", function(d) {return x(d3.time.day.floor(d.Time)); })
-	    .attr("width", barWidth)
-	    .attr("y", function(d) { return y(d.Value); })
-	    .attr("height", function(d) { return height - y(d.Value); })
-	    .on('click', function(d){
-		var target = container+"_lineGraph";
-		d3.select(target).remove();
-		drawLine(container,d3.time.format("%Y-%m-%d")(d.Time),col,ymin,ymax);});;
-
-    });
+function temp(str) {
+    return myFloat.format(str)+" °C";
 }
-
-function drawCombined(container,date,col,title,ymin,ymax) {
-    if (date=='today') {
-	date = d3.time.format("%Y-%m-%d")(new Date());
-    }
-    var svg = d3.select(container)
-    	.append("text")
-    	.attr("class","title")
-    	.attr("x","0")
-    	.attr("y","1em")
-    	.text(title);
-    
-    drawLine(container,date,col,ymin,ymax);
-    drawBar(container,date,col,ymin,ymax);
+function hum(str) {
+    return myFloat.format(str)+" %";
 }
-
-/* Ideen :
-- maak min max en avg line en bar in alle 3
-*/
+function pres(str) {
+    return myFloat.format(Math.floor(parseInt(str)/100.0))+" mb";
+}
+function windSpeed(str) {
+    return myFloat.format(str)+" m/s";
+}
+function windDir(str) {
+    var dir = parseInt(str);
+   
+    if      (dir <= 200) {return "Nord";}
+    else if (dir <= 350) {return "Ouest";}
+    else if (dir <= 550) {return "Sud Est";}
+    else if (dir <= 700) {return "Nord Ouest";}
+    else if (dir <= 725) {return "Est";}
+    else if (dir <= 900) {return "Nord Est";}
+    else {return "SO";}
+}
+function rain(str) {
+    return myFloat.format(parseInt(str))+" mm/24h";
+}
