@@ -24,7 +24,7 @@
     (37 F.SilkS user)
     (38 B.Mask user hide)
     (39 F.Mask user hide)
-    (40 Dwgs.User user hide)
+    (40 Dwgs.User user)
     (41 Cmts.User user hide)
     (42 Eco1.User user hide)
     (43 Eco2.User user hide)
@@ -65,7 +65,7 @@
     (grid_origin 95 48)
     (visible_elements 7FFFF7FF)
     (pcbplotparams
-      (layerselection 0x00030_80000001)
+      (layerselection 0x01030_80000001)
       (usegerberextensions false)
       (excludeedgelayer true)
       (linewidth 0.100000)
