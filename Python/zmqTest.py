@@ -7,9 +7,17 @@
 #   - Initial Version 1.0
 #  =================================================
 
-from zmqClient import zmqClient
+import zmq
+import time
 
-myClient = zmqClient("GpsBase","GpsBase","tcp://192.168.1.32:4245","tcp://192.168.1.32:4244")
+context = zmq.Context()
+socket  = context.socket(zmq.PUB)
+socket.bind("tcp://134.212.97.63:5060")
 
-for i in range(10):
-    myClient.send("Alive")
+for n in range (5):
+    time.sleep(1)
+    socket.send_multipart(["Global","%s"%n])
+    print "send 'Global %s'"%n
+    
+    
+    
